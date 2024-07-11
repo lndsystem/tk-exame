@@ -1,4 +1,4 @@
-create table clientes (
+create table clients (
 	id int not null primary key,
 	first_name varchar(250) not null,
 	last_name varchar(250),

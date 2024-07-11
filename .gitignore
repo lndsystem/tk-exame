@@ -29,3 +29,8 @@ mvnw*
 
 bin/
 target/
+
+.classpath
+.factorypath
+.project
+.settings/
