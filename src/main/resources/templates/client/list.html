@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{template/layout.html}">
 
 <body>
@@ -7,8 +8,9 @@
 		<div class="row justify-content-between text-end">
 			<div class="col"></div>
 			<div class="col">
-				<a type="button" class="btn btn-secondary" th:href="@{/create}"><i class="fa fa-plus-circle"
-						aria-hidden="true"></i> Criar Cliente</a>
+				<a type="button" class="btn btn-secondary"
+					th:href="@{/clients/create}"><i class="fa fa-plus-circle"
+					aria-hidden="true"></i> Criar Cliente</a>
 			</div>
 		</div>
 		<div class="row">
@@ -17,61 +19,32 @@
 					<thead>
 						<tr>
 							<th scope="col">#</th>
-							<th scope="col">First</th>
-							<th scope="col">Last</th>
-							<th scope="col">Handle</th>
+							<th scope="col">First Name</th>
+							<th scope="col">Last Name</th>
+							<th scope="col">E-mail</th>
+							<th scope="col">Ação</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<th scope="row">1</th>
-							<td>Mark</td>
-							<td>Otto</td>
-							<td>@mdo</td>
-						</tr>
-						<tr>
-							<th scope="row">2</th>
-							<td>Jacob</td>
-							<td>Thornton</td>
-							<td>@fat</td>
-						</tr>
-						<tr>
-							<th scope="row">3</th>
-							<td colspan="2">Larry the Bird</td>
-							<td>@twitter</td>
-						</tr>
+						<tr th:each="client : ${listClients}">
+							<th scope="row" th:text="${client.id}">1</th>
+							<td th:text="${client.firstName}">Mark</td>
+							<td th:text="${client.lastName}">Otto</td>
+							<td th:text="${client.email}">Otto</td>
+							<td>
+								<a href="#">
+									<i class="fa fa-road" aria-hidden="true"></i>
+								</a>
+							</td>
+						</tr>						
 					</tbody>
 				</table>
 			</div>
 		</div>
-		
-		<button id="cep"></button>
 	</main>
-
 	<th:block layout:fragment="javascripts-extras">
 		<script>
 			$(document).ready(function () {
-				
-				$('#cep').on('click', function() {
-					
-					$.ajax({
-						url: '/addresses/zipcode/09760000',
-						beforeSend: function() {
-							$.blockUI()	
-						},
-						success: function(response) {
-							console.log(response);
-						},
-						complete: function() {
-							$.unblockUI();		
-						},
-						error: function(xhr, status, error) {
-							console.log(xhr);
-							console.log('status: ' + status);
-							console.log(error);
-						}
-					});
-				})
 			});
 		</script>
 	</th:block>

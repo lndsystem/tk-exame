@@ -31,7 +31,7 @@ public class Address {
 	private Client client;
 
 	@NotBlank
-	private String addess;
+	private String address;
 
 	@NotBlank
 	private String number;

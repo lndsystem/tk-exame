@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{template/layout.html}">
 
 <body>
@@ -7,71 +8,74 @@
 		<div class="row justify-content-between text-end">
 			<div class="col"></div>
 			<div class="col">
-				<a type="button" class="btn btn-secondary" th:href="@{/}"><i class="fa fa-list" aria-hidden="true"></i>
-					Listar</a>
+				<a type="button" class="btn btn-secondary" th:href="@{/clients}"><i
+					class="fa fa-list" aria-hidden="true"></i> Listar</a>
 			</div>
 		</div>
-		<div class="row">
-			<form class="row g-3">
-			  <div class="col-md-3">
-			    <label for="first-name" class="form-label">Primeiro Nome</label>
-			    <input type="text" class="form-control" id="first-name">
-			  </div>
-			  <div class="col-md-3">
-			    <label for="last-name" class="form-label">Sobre Nome</label>
-			    <input type="text" class="form-control" id="last-name">
-			  </div>
-			  <div class="col-md-6">
-			    <label for="email" class="form-label">E-mail</label>
-			    <input type="email" class="form-control" id="email">
-			  </div>
-			  
-			  <!-- Address -->
-			  <div class="col-md-2">
-			    <label for="zipCode" class="form-label">CEP</label>
-			    <input type="text" class="form-control" id="zipCode">
-			  </div>
-			  <div class="col-10">
-			    <label for="address" class="form-label">Endereço</label>
-			    <input type="text" class="form-control" id="address" placeholder="Av. Paulista">
-			  </div>
-			  
-			  <div class="col-3">
-			    <label for="number" class="form-label">Número</label>
-			    <input type="text" class="form-control" id="number">
-			  </div>
-			  <div class="col-3">
-			    <label for="complement" class="form-label">Complemento</label>
-			    <input type="text" class="form-control" id="complement">
-			  </div>
-			  
-			  <div class="col-md-6">
-			    <label for="inputCity" class="form-label">Bairro</label>
-			    <input type="text" class="form-control" id="inputCity">
-			  </div>
-			  
-			  <div class="col-md-6">
-			    <label for="city" class="form-label">Cidade</label>
-			    <input type="text" class="form-control" id="city">
-			  </div>
-			  <div class="col-md-6">
-			    <label for="inputState" class="form-label">Estado</label>
-			    <select id="inputState" class="form-select">
-			      <option selected>Choose...</option>
-			      <option>...</option>
-			    </select>
-			  </div>
-			  			  
-			  <div class="col-12">
-			    <button type="submit" class="btn btn-primary">Salvar</button>
-			  </div>
-			</form>
+		<div class="alert alert-success" role="alert" style="margin-top: 10px;" th:unless="${#strings.isEmpty(msgOk)}">
+		  <span th:text="${msgOk}"></span>
 		</div>
+		<div class="alert alert-danger" role="alert" style="margin-top: 10px;" th:unless="${#strings.isEmpty(msgError)}">
+		  <span th:text="${msgError}"></span>
+		</div>
+				
+		<form class="row g-3" method="post" th:object="${client}"
+			th:action="@{/clients/create}">
+			<input type="hidden" th:field="*{id}">
+			<div class="col-md-3">
+				<label for="first-name" class="form-label">Primeiro Nome</label> <input
+					type="text" class="form-control" id="first-name"
+					th:field="*{firstName}"
+					th:classappend="${#fields.hasErrors('firstName')}? 'is-invalid'">
+			</div>
+			<div class="col-md-3">
+				<label for="last-name" class="form-label">Sobre Nome</label> <input
+					type="text" class="form-control" id="last-name"
+					th:field="*{lastName}">
+			</div>
+			<div class="col-md-6">
+				<label for="email" class="form-label">E-mail</label> <input
+					type="email" class="form-control" id="email" th:field="*{email}"
+					th:classappend="${#fields.hasErrors('email')}? 'is-invalid'">
+			</div>
+
+			
+			<div class="col-12">
+				<button type="submit" class="btn btn-primary">Salvar</button>
+			</div>
+		</form>
 	</main>
 
 	<th:block layout:fragment="javascripts-extras">
 		<script>
-			
+			$(document).ready(function() {
+				$('.js-input-text').mask('99999-999');
+				$('.js-input-text').on('keyup paste change', function() {
+					const cep = $(this).val().replace(/[^\d]/g, '');
+					if(cep.length == 8) {
+						$.ajax({
+							url: `/addresses/zipcode/${cep}`,
+							beforeSend: function() {
+								$.blockUI()	
+							},
+							success: function(response) {
+								$('#address').val(response.street);
+								$('#country').val(response.district);
+								$('#city').val(response.city);								
+								$('#state').val(response.stateShortname);
+							},
+							complete: function() {
+								$.unblockUI();		
+							},
+							error: function(xhr, status, error) {
+								console.log(xhr);
+								console.log('status: ' + status);
+								console.log(error);
+							}
+						});
+					}
+				});
+			});
 		</script>
 	</th:block>
 </body>
