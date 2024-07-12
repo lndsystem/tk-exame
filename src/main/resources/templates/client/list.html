@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{template/layout.html}">
+
+<body>
+	<main class="my-5" layout:fragment="content">
+		<div class="row justify-content-between text-end">
+			<div class="col"></div>
+			<div class="col">
+				<a type="button" class="btn btn-secondary" th:href="@{/create}"><i class="fa fa-plus-circle"
+						aria-hidden="true"></i> Criar Cliente</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<table class="table">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">First</th>
+							<th scope="col">Last</th>
+							<th scope="col">Handle</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th scope="row">1</th>
+							<td>Mark</td>
+							<td>Otto</td>
+							<td>@mdo</td>
+						</tr>
+						<tr>
+							<th scope="row">2</th>
+							<td>Jacob</td>
+							<td>Thornton</td>
+							<td>@fat</td>
+						</tr>
+						<tr>
+							<th scope="row">3</th>
+							<td colspan="2">Larry the Bird</td>
+							<td>@twitter</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+		<button id="cep"></button>
+	</main>
+
+	<th:block layout:fragment="javascripts-extras">
+		<script>
+			$(document).ready(function () {
+				
+				$('#cep').on('click', function() {
+					
+					$.ajax({
+						url: '/addresses/zipcode/09760000',
+						beforeSend: function() {
+							$.blockUI()	
+						},
+						success: function(response) {
+							console.log(response);
+						},
+						complete: function() {
+							$.unblockUI();		
+						},
+						error: function(xhr, status, error) {
+							console.log(xhr);
+							console.log('status: ' + status);
+							console.log(error);
+						}
+					});
+				})
+			});
+		</script>
+	</th:block>
+</body>
+
+</html>
