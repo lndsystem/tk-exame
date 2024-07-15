@@ -37,12 +37,32 @@
         
         
         <script   src="https://code.jquery.com/jquery-3.7.1.min.js"   integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="   crossorigin="anonymous"></script>
-        <!--<script th:src="@{/webjars/jquery/jquery.min.js}" type="text/javascript" defer></script>-->
+        <!--<script th:src="@{/webjars/jquery/jquery.min.js}" type="text/javascript" defer></script>-->        
         <script th:src="@{/webjars/popper.js/umd/popper.min.js}" type="text/javascript" defer></script>
         <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}" type="text/javascript" defer></script>
         <script th:src="@{/webjars/jquery-mask-plugin/dist/jquery.mask.min.js}" type="text/javascript" defer></script>        
         <script th:src="@{/webjars/jquery-blockui/jquery.blockUI.js}" type="text/javascript" defer></script>
-        <script th:src="@{/webjars/sweetalert2/dist/sweetalert2.min.js}" type="text/javascript" defer></script>
+        <script th:src="@{/webjars/sweetalert2/dist/sweetalert2.min.js}" type="text/javascript" defer></script>        
+        <script th:src="@{/js/jquery.serializejson.js}" type="text/javascript"></script>
+        
+        <script>
+        	const optionsBlockUI = { 
+                css: { 
+	                border: 'none', 
+	                padding: '10px', 
+	                backgroundColor: '#000', 
+	                '-webkit-border-radius': '10px', 
+	                '-moz-border-radius': '10px', 
+	                opacity: .5, 
+	                color: '#fff',
+	                fontSize: '10pt',
+	                zIndex: 999999 
+            	},
+            	overlayCSS: {
+            		zIndex: 999998
+            	}
+            };
+        </script>
         
 		<th:block layout:fragment="javascripts-extras"></th:block>
     </body>    

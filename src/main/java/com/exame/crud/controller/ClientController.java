@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -25,72 +26,82 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/clients")
 public class ClientController {
 
-	private final ClientService clientService;
+    private final ClientService clientService;
 
-	@GetMapping
-	public ModelAndView listar() {
-		final var mv = new ModelAndView("client/list");
+    @GetMapping
+    public ModelAndView listar() {
+        final var mv = new ModelAndView("client/list");
+        mv.addObject("listClients", this.clientService.findAllClients());
+        return mv;
+    }
 
-		mv.addObject("listClients", this.clientService.findAllClients());
+    @GetMapping("/create")
+    public ModelAndView create(Client client) {
+        final var mv = new ModelAndView("client/create");
+        mv.addObject(client);
+        return mv;
+    }
 
-		return mv;
-	}
+    @PostMapping("/create")
+    public ModelAndView save(@ModelAttribute @Valid Client client, BindingResult result, RedirectAttributes attr) {
+        return saveOrUpdate(null, client, new ModelAndView("redirect:/clients/create"), result, attr);
+    }
 
-	@GetMapping("/create")
-	public ModelAndView create(Client client) {
-		final var mv = new ModelAndView("client/create");
-		mv.addObject(client);
-		return mv;
-	}
+    @PutMapping("/update/{id}")
+    public ModelAndView update(@PathVariable Integer id, @ModelAttribute @Valid Client client, BindingResult result, RedirectAttributes attr) {
+        return saveOrUpdate(id, client, new ModelAndView("redirect:/clients/create"), result, attr);
+    }
 
-	@PostMapping("/create")
-	public ModelAndView save(@ModelAttribute @Valid Client client, BindingResult result, RedirectAttributes attr) {
-		var mv = new ModelAndView("redirect:/clients/create");
+    private ModelAndView saveOrUpdate(Integer id, Client client, ModelAndView mv, BindingResult result, RedirectAttributes attr) {
+        if (result.hasErrors()) {
+            return create(client);
+        }
 
-		if (result.hasErrors()) {
-			return create(client);
-		}
+        try {
+            if (id == null) {
+                this.clientService.saveClient(client);
+            } else {
+                this.clientService.updateClient(id, client);
+            }
+        } catch (EntityNotFoundException notFound) {
+            mv = create(new Client());
+            mv.addObject("msgError", "Cliente não localizado.");
+            return mv;
+        } catch (EntityExistsException e) {
+            mv = create(client);
+            mv.addObject("msgError", "Cadastro já existente.");
+            result.rejectValue("email", null);
+            return mv;
+        } catch (Exception e) {
+            log.error(e);
+            mv = new ModelAndView("redirect:/clients/create");
+            mv.addObject("msgError", "Erro de infra-estrutura. Se o erro persistir, entre em contato com o Administrador.");
+            mv.setViewName("client/create");
+            return mv;
+        }
 
-		try {
-			this.clientService.saveClient(client);
-		} catch (EntityNotFoundException notFound) {
-			mv = create(new Client());
-			mv.addObject("msgError", "Cliente não localizado.");
-			return mv;
-		} catch (EntityExistsException e) {
-			mv = create(client);
-			mv.addObject("msgError", "Cadastro já existente.");
-			result.rejectValue("email", null);
-			return mv;
-		} catch (Exception e) {
-			log.error(e);
-			mv.addObject("msgError", "Erro de infra-estrutura. Se o erro persistir, entre em contato com o Administrador.");
-			mv.setViewName("client/create");
-			return mv;
-		}
+        attr.addFlashAttribute("msgOk", "Cliente salvo com sucesso!");
+        return mv;
+    }
 
-		attr.addFlashAttribute("msgOk", "Cliente salvo com sucesso!");
-		return mv;
-	}
+    @GetMapping("/edit/{id}")
+    public ModelAndView edit(@PathVariable Integer id) {
+        try {
+            return create(this.clientService.findClientById(id));
+        } catch (EntityNotFoundException notFound) {
+            final var mv = create(new Client());
+            mv.addObject("msgError", "Cliente não localizado.");
+            return mv;
+        } catch (Exception e) {
+            final var mv = create(new Client());
+            mv.addObject("msgError", e.getMessage());
+            return mv;
+        }
+    }
 
-	@GetMapping("/edit/{id}")
-	public ModelAndView edit(@PathVariable Integer id) {
-		try {
-			return create(this.clientService.findClientById(id));
-		} catch (EntityNotFoundException notFound) {
-			final var mv = create(new Client());
-			mv.addObject("msgError", "Cliente não localizado.");
-			return mv;
-		} catch (Exception e) {
-			final var mv = create(new Client());
-			mv.addObject("msgError", e.getMessage());
-			return mv;
-		}
-	}
-	
-	@GetMapping("/remove/{id}")
-	public ModelAndView remove(@PathVariable Integer id) {
-		this.clientService.removeClient(id);
-		return listar();
-	}
+    @GetMapping("/remove/{id}")
+    public ModelAndView remove(@PathVariable Integer id) {
+        this.clientService.removeClient(id);
+        return listar();
+    }
 }

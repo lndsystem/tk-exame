@@ -73,64 +73,71 @@
 					</div>
 					<div class="modal-body">
 						<div id="address-content">
-							<div class="card">
-								<div class="card-body">This is some text within a card
-									body.</div>
-							</div>
-							<div class="card">
-								<div class="card-body">This is some text within a card
-									body.</div>
-							</div>
-							<div class="card">
-								<div class="card-body">This is some text within a card
-									body.</div>
-							</div>
-							<div class="card">
-								<div class="card-body">This is some text within a card
-									body.</div>
-							</div>
-							<div class="card">
-								<div class="card-body">This is some text within a card
-									body.</div>
-							</div>
-							<div class="card">
-								<div class="card-body">This is some text within a card
-									body.</div>
-							</div>
-							<div class="card">
-								<div class="card-body">This is some text within a card
-									body.</div>
-							</div>
-							<div class="card">
-								<div class="card-body">This is some text within a card
-									body.</div>
-							</div>
-							<div class="card">
-								<div class="card-body">This is some text within a card
-									body.</div>
-							</div>
-							<div class="card">
-								<div class="card-body">This is some text within a card
-									body.</div>
-							</div>
-							<div class="card">
-								<div class="card-body">This is some text within a card
-									body.</div>
-							</div>
-							<div class="card">
-								<div class="card-body">This is some text within a card
-									body.</div>
-							</div>
-							<div class="card">
-								<div class="card-body">This is some text within a card
-									body.</div>
-							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
+						<button type="button" class="btn btn-success js-add-address"><i class="fa fa-plus-circle"
+					aria-hidden="true"></i> Adicionar</button>
 						<button type="button" class="btn btn-secondary"
 							data-bs-dismiss="modal">Fechar</button>
 					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div id="modal-address-add" class="modal" tabindex="-1">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Criar Novo Endereço</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<form id="form-address-modal">
+						<div class="modal-body">
+							<div class="row">
+								<!-- Row 1 -->
+								<div class="col-3">
+									<label for="postal-code" class="form-label">CEP:</label>
+	    							<input type="text" class="form-control" id="postal-code" name="postalCode">
+								</div>
+								<div class="col-9">
+									<label for="address" class="form-label">Endereço:</label>
+	    							<input type="text" class="form-control js-error js-error-address" id="address" name="address">
+								</div>
+								
+								<!-- Row 2 -->
+								<div class="col-4">
+									<label for="number" class="form-label">Número:</label>
+	    							<input type="text" class="form-control js-error js-error-number" id="number" name="number">
+								</div>
+								<div class="col-4">
+									<label for="complement" class="form-label">Complemento:</label>
+	    							<input type="text" class="form-control" id="complement" name="complement">
+								</div>
+								<div class="col-4">
+									<label for="country" class="form-label">Bairro:</label>
+	    							<input type="text" class="form-control" id="country" name="country">
+								</div>
+								
+								<!-- Row 3 -->
+								<div class="col-6">
+									<label for="city" class="form-label">Cidade:</label>
+	    							<input type="text" class="form-control" id="city" name="city">
+								</div>
+								<div class="col-6">
+									<label for="state" class="form-label">Estado:</label>
+	    							<input type="text" class="form-control" id="state" name="state">
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-success"><i class="fa fa-floppy-o"
+						aria-hidden="true"></i> Salvar</button>
+							<button type="button" class="btn btn-secondary"
+								data-bs-dismiss="modal">Fechar</button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>
@@ -158,11 +165,22 @@
 			}
 			
 			function deleteAddress(idAddress) {
-				console.log('remover: ', idAddress)
-				
-				
-				$(`#row-address-${idAddress}`).remove();
-				
+				$.ajax({
+					url: `/api/v1/addresses/${idAddress}`,
+					type: 'DELETE',
+					beforeSend: function() {
+						$.blockUI(optionsBlockUI)
+					},
+					success: function(response) {
+						$(`#row-address-${idAddress}`).remove();
+					},
+					error: function(xhr, status, error) {
+					
+					},
+					complete: function() {
+						$.unblockUI();
+					}
+				});
 			}
 			
 			$(document).ready(function() {
@@ -171,15 +189,13 @@
 					$.ajax({
 						url: `/addresses/client/${idClient}`,
 						beforeSend: function() {
-							$.blockUI()
+							$.blockUI(optionsBlockUI)
 						},
 						success: function(response) {
-						
-							$('#address-content').html(response);
-						
+							if(response){
+								$('#address-content').html(response);
+							}							
 							$('#modal-address').modal('show');
-						
-							console.log(response);
 						},
 						error: function(xhr, status, error) {
 						
@@ -189,6 +205,47 @@
 						}
 					});
 				});	
+
+				$('.js-add-address').on('click', function() {
+					$('.js-error').each((index,item) => {
+						$(item).removeClass('is-invalid')
+					});
+					$('input').each((index,item) => {
+						$(item).val('');
+					});
+					$('#modal-address-add').modal('show');
+				});
+
+				$('#form-address-modal').on('submit', function(event) {
+					event.preventDefault();									
+					const data = $('#form-address-modal').serializeJSON();
+
+					$.ajax({
+						url: `/api/v1/addresses`,
+						type: 'POST',
+						data: JSON.stringify(data),
+						contentType: "application/json",
+						beforeSend: function() {
+							$.blockUI(optionsBlockUI);
+							$('.js-error').each((index,item) => {
+								$(item).removeClass('is-invalid')
+							});
+						},
+						success: function(response) {
+							console.log(response);
+							$('.js-error').each((index,item) => {
+								$(item).addClass('is-invalid')
+							});
+						},
+						error: function(xhr, status, error) {							
+							console.log(xhr);
+							console.log(status);
+						},
+						complete: function() {
+							$.unblockUI();
+						}
+					});					
+				});
 			});
 		</script>
 	</th:block>

@@ -1,13 +1,10 @@
 package com.exame.crud.model;
 
-import java.util.Set;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -38,8 +35,5 @@ public class Client {
 	@Email
 	@NotBlank
 	private String email;
-
-	@OneToMany(mappedBy = "client")
-	private Set<Address> address;
 
 }

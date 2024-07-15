@@ -16,42 +16,46 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ClientService {
 
-	private final ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
 
-	public void saveClient(Client client) {
-		if (client.getId() != null && client.getId() > 0) {
-			Client clientDb = findClientById(client.getId());
+    public Client saveClient(Client client) {
+        if (this.clientRepository.existsByEmail(client.getEmail())) {
+            throw new EntityExistsException();
+        }
+        return this.clientRepository.save(client);
+    }
 
-			if (!client.getEmail().equals(clientDb.getEmail()) && this.clientRepository.existsByEmail(client.getEmail())) {
-				throw new EntityExistsException();
-			}
+    public Client updateClient(Integer id, Client client) {
+        Client clientDb = findClientById(id);
 
-			BeanUtils.copyProperties(client, clientDb, "id");
-			client = clientDb;
-		} else if (this.clientRepository.existsByEmail(client.getEmail())) {
-			throw new EntityExistsException();
-		}
-		this.clientRepository.save(client);
-	}
+        if (!client.getEmail().equals(clientDb.getEmail()) && this.clientRepository.existsByEmail(client.getEmail())) {
+            throw new EntityExistsException();
+        }
 
-	public Client findClientById(Integer id) {
-		final var client = this.clientRepository.findById(id);
+        BeanUtils.copyProperties(client, clientDb);
+        client = clientDb;
 
-		if (client.isEmpty()) {
-			throw new EntityNotFoundException();
-		}
+        return this.clientRepository.save(client);
+    }
 
-		return client.get();
-	}
+    public Client findClientById(Integer id) {
+        final var client = this.clientRepository.findById(id);
 
-	public List<Client> findAllClients() {
-		return this.clientRepository.findAll();
-	}
+        if (client.isEmpty()) {
+            throw new EntityNotFoundException();
+        }
 
-	public void removeClient(Integer id) {
-		if (clientRepository.existsById(id)) {
-			this.clientRepository.deleteById(id);
-		}
-	}
+        return client.get();
+    }
+
+    public List<Client> findAllClients() {
+        return this.clientRepository.findAll();
+    }
+
+    public void removeClient(Integer id) {
+        if (clientRepository.existsById(id)) {
+            this.clientRepository.deleteById(id);
+        }
+    }
 
 }
