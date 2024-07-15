@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.client.HttpClientErrorException.NotFound;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -15,6 +14,7 @@ import com.exame.crud.model.Client;
 import com.exame.crud.service.ClientService;
 
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -32,7 +32,7 @@ public class ClientController {
 		final var mv = new ModelAndView("client/list");
 
 		mv.addObject("listClients", this.clientService.findAllClients());
-		
+
 		return mv;
 	}
 
@@ -53,15 +53,18 @@ public class ClientController {
 
 		try {
 			this.clientService.saveClient(client);
+		} catch (EntityNotFoundException notFound) {
+			mv = create(new Client());
+			mv.addObject("msgError", "Cliente não localizado.");
+			return mv;
 		} catch (EntityExistsException e) {
 			mv = create(client);
 			mv.addObject("msgError", "Cadastro já existente.");
 			result.rejectValue("email", null);
-
 			return mv;
 		} catch (Exception e) {
 			log.error(e);
-			mv.addObject("msgError", "Erro de infra-estrutura. Se o erro persistir, entre em contato com o Administrador." );
+			mv.addObject("msgError", "Erro de infra-estrutura. Se o erro persistir, entre em contato com o Administrador.");
 			mv.setViewName("client/create");
 			return mv;
 		}
@@ -74,7 +77,7 @@ public class ClientController {
 	public ModelAndView edit(@PathVariable Integer id) {
 		try {
 			return create(this.clientService.findClientById(id));
-		} catch (NotFound notFound) {
+		} catch (EntityNotFoundException notFound) {
 			final var mv = create(new Client());
 			mv.addObject("msgError", "Cliente não localizado.");
 			return mv;
@@ -83,5 +86,11 @@ public class ClientController {
 			mv.addObject("msgError", e.getMessage());
 			return mv;
 		}
+	}
+	
+	@GetMapping("/remove/{id}")
+	public ModelAndView remove(@PathVariable Integer id) {
+		this.clientService.removeClient(id);
+		return listar();
 	}
 }

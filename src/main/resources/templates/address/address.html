@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{template/layout.html}">	
+<body>
+	<th:block th:fragment="address">		
+	  <div class="card-body">
+	  	<h6 class="card-subtitle mb-2 text-body-secondary"># <span th:text="${iter.index+1}"></span></h6>
+	    <div class="row">
+	    	<div class="col-12">
+	    		<table class="table">
+		    		<tr>
+		    			<td colspan="3"><span class="title">Endereço:</span><span th:text="${address.address}"></td>
+		    		</tr>
+		    		<tr>
+		    			<td><span class="title">No.</span><span th:text="${address.number}"></span></td>
+		    			<td><span class="title">Compl.:</span><span th:text="${address.complement}"></span></td>
+		    			<td><span class="title">Cep:</span><span th:text="${address.postalCode}"></span></td>
+		    		</tr>
+		    		<tr>
+		    			<td><span class="title">Bairro:</span><span th:text="${address.country}"></span></td>
+		    			<td><span class="title">Cidade:</span><span th:text="${address.city}"></span></td>
+		    			<td><span class="title">UF:</span><span th:text="${address.state}"></span></td>
+		    		</tr>
+		    	</table>
+	    	</div>		    	
+	    	<div class="col-12 text-end">		    		
+	    		<button class="btn btn-primary">Editar</button>
+	    		<button class="btn btn-danger" th:onclick="|deleteAddress(${address.id})|">Remover</button>
+	    	</div>
+	    </div>
+	  </div>		
+	</th:block>
+</body>	
+</html>

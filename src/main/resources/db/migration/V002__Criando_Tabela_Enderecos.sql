@@ -1,7 +1,7 @@
 create table addresses (
 	id int generated always as identity primary key,
 	id_client int not null,
-	addess varchar(250) not null,
+	address varchar(250) not null,
 	number varchar(20) not null,
 	complement varchar(250),
 	postal_code varchar(10),

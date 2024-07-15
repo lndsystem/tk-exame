@@ -3,6 +3,19 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{template/layout.html}">
 
+<th:block layout:fragment="headers-extras">
+	<style>
+.card {
+	margin-top: 5px;
+}
+
+.title {
+	font-weight: bold;
+	padding-right: 10px;
+}
+</style>
+</th:block>
+
 <body>
 	<main class="my-5" layout:fragment="content">
 		<div class="row justify-content-between text-end">
@@ -22,7 +35,7 @@
 							<th scope="col">First Name</th>
 							<th scope="col">Last Name</th>
 							<th scope="col">E-mail</th>
-							<th scope="col">Ação</th>
+							<th scope="col" style="width: 120px;">Ação</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -31,20 +44,151 @@
 							<td th:text="${client.firstName}">Mark</td>
 							<td th:text="${client.lastName}">Otto</td>
 							<td th:text="${client.email}">Otto</td>
-							<td>
-								<a href="#">
+							<td><a class="btn btn-primary btn-sm js-button-address"
+								data-bs-toggle="tooltip" data-bs-placement="left"
+								data-bs-title="Endereços" th:attr="data-identity=${client.id}">
 									<i class="fa fa-road" aria-hidden="true"></i>
-								</a>
-							</td>
-						</tr>						
+							</a> <a class="btn btn-secondary btn-sm" data-bs-toggle="tooltip"
+								data-bs-placement="left" data-bs-title="Editar"
+								th:href="@{/clients/edit/{id}(id=${client.id})}"> <i
+									class="fa fa-pencil" aria-hidden="true"></i>
+							</a> <a class="btn btn-danger btn-sm" data-bs-toggle="tooltip"
+								data-bs-placement="left" data-bs-title="Remover"
+								th:onclick="|deleteClient('@{/clients/remove/{id}(id=${client.id})}')|">
+									<i class="fa fa-trash" aria-hidden="true"></i>
+							</a></td>
+						</tr>
 					</tbody>
 				</table>
 			</div>
 		</div>
+
+		<div id="modal-address" class="modal" tabindex="-1">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Endereços do Cliente</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div id="address-content">
+							<div class="card">
+								<div class="card-body">This is some text within a card
+									body.</div>
+							</div>
+							<div class="card">
+								<div class="card-body">This is some text within a card
+									body.</div>
+							</div>
+							<div class="card">
+								<div class="card-body">This is some text within a card
+									body.</div>
+							</div>
+							<div class="card">
+								<div class="card-body">This is some text within a card
+									body.</div>
+							</div>
+							<div class="card">
+								<div class="card-body">This is some text within a card
+									body.</div>
+							</div>
+							<div class="card">
+								<div class="card-body">This is some text within a card
+									body.</div>
+							</div>
+							<div class="card">
+								<div class="card-body">This is some text within a card
+									body.</div>
+							</div>
+							<div class="card">
+								<div class="card-body">This is some text within a card
+									body.</div>
+							</div>
+							<div class="card">
+								<div class="card-body">This is some text within a card
+									body.</div>
+							</div>
+							<div class="card">
+								<div class="card-body">This is some text within a card
+									body.</div>
+							</div>
+							<div class="card">
+								<div class="card-body">This is some text within a card
+									body.</div>
+							</div>
+							<div class="card">
+								<div class="card-body">This is some text within a card
+									body.</div>
+							</div>
+							<div class="card">
+								<div class="card-body">This is some text within a card
+									body.</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Fechar</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</main>
+
+
+
 	<th:block layout:fragment="javascripts-extras">
 		<script>
-			$(document).ready(function () {
+			function deleteClient(url) {
+				Swal.fire({
+				  title: "Deseja remover?",
+				  text: "Confirmar a excluir do Cliente.",
+				  icon: "warning",
+				  showCancelButton: true,
+				  cancelButtonText: "Cancelar",
+				  confirmButtonColor: "#3085d6",
+				  cancelButtonColor: "#d33",
+				  confirmButtonText: "Remover"
+				}).then((result) => {
+				  if (result.isConfirmed) {
+				  	window.location.href = url;
+				  }
+				});
+			}
+			
+			function deleteAddress(idAddress) {
+				console.log('remover: ', idAddress)
+				
+				
+				$(`#row-address-${idAddress}`).remove();
+				
+			}
+			
+			$(document).ready(function() {
+				$('.js-button-address').on('click', function() {
+					const idClient = $(this).data('identity');
+					$.ajax({
+						url: `/addresses/client/${idClient}`,
+						beforeSend: function() {
+							$.blockUI()
+						},
+						success: function(response) {
+						
+							$('#address-content').html(response);
+						
+							$('#modal-address').modal('show');
+						
+							console.log(response);
+						},
+						error: function(xhr, status, error) {
+						
+						},
+						complete: function() {
+							$.unblockUI();
+						}
+					});
+				});	
 			});
 		</script>
 	</th:block>
