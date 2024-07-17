@@ -32,8 +32,8 @@
 					<thead>
 						<tr>
 							<th scope="col">#</th>
-							<th scope="col">First Name</th>
-							<th scope="col">Last Name</th>
+							<th scope="col">Nome</th>
+							<th scope="col">Sobre Nome</th>
 							<th scope="col">E-mail</th>
 							<th scope="col" style="width: 120px;">Ação</th>
 						</tr>
@@ -282,7 +282,21 @@
 					const cep = $('#postal-code').val().replace(/[^\d]/g, '');
 					
 					if(cep.length == 8) {
-						console.log(cep);
+						$.ajax({
+							url: `/api/v1/address/${cep}/zipcode`,
+							beforeSend: function() {
+								$.blockUI(optionsBlockUI);
+							},
+							success: function(response) {
+								console.log(response);
+							},
+							error: function(xhr, status, error) {
+
+							},
+							complete: function() {
+								$.unblockUI();
+							}
+						});
 					}
 				});
 			});

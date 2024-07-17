@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{template/layout.html}">
+
+<th:block layout:fragment="headers-extras">
+	<style>
+.card {
+	margin-top: 5px;
+}
+
+.title {
+	font-weight: bold;
+	padding-right: 10px;
+}
+</style>
+</th:block>
+
+<body>
+	<main class="my-5" layout:fragment="content">
+		<div class="row justify-content-between text-end">
+			<div class="col"></div>
+			<div class="col">
+				<a type="button" class="btn btn-secondary"
+					th:href="@{/addresses/create}"><i class="fa fa-plus-circle"
+					aria-hidden="true"></i> Criar Endereço</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<table class="table">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Cep</th>
+							<th scope="col">Endereço</th>
+							<th scope="col">Bairro</th>
+							<th scope="col">Cidade</th>
+							<th scope="col">UF</th>
+							<th scope="col" style="width: 120px;">Ação</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</main>
+</body>
+</html>

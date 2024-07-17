@@ -29,7 +29,7 @@ public class ClientController {
     private final ClientService clientService;
 
     @GetMapping
-    public ModelAndView listar() {
+    public ModelAndView list() {
         final var mv = new ModelAndView("client/list");
         mv.addObject("listClients", this.clientService.findAllClients());
         return mv;
@@ -102,6 +102,6 @@ public class ClientController {
     @GetMapping("/remove/{id}")
     public ModelAndView remove(@PathVariable Integer id) {
         this.clientService.removeClient(id);
-        return listar();
+        return list();
     }
 }

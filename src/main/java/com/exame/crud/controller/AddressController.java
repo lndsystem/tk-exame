@@ -17,13 +17,27 @@ import lombok.RequiredArgsConstructor;
 public class AddressController {
 
 	private final AddressService addressService;
+	
+	
+	@GetMapping
+	public ModelAndView list() {
+	    final var mv = new ModelAndView("address/list");
+	    mv.addObject("listAddresses", this.addressService.findAll());
+	    return mv;
+	}
+	
+	@GetMapping("/create")
+	public ModelAndView create(Address address) {
+	    final var mv = new ModelAndView("address/create");
+	    mv.addObject(address);
+	    return mv;
+	}
+	
 
 	@GetMapping("/client/{idClient}")
 	public ModelAndView findAddressByClient(@PathVariable Integer idClient) {
 		var mv = new ModelAndView("address/addresses :: address");
-
 		mv.addObject("addresses", this.addressService.findAllByClientId(idClient));
-
 		return mv;
 	}
 

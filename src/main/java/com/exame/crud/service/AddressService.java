@@ -41,4 +41,8 @@ public class AddressService {
         }
     }
 
+    public List<Address> findAll() {
+        return this.addressRepository.findAll();
+    }
+
 }

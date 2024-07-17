@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{template/layout.html}">
+
+<body>
+	<main class="my-5" layout:fragment="content">
+		<div class="row justify-content-between text-end">
+			<div class="col"></div>
+			<div class="col">
+				<a type="button" class="btn btn-secondary" th:href="@{/addresses}"><i
+					class="fa fa-list" aria-hidden="true"></i> Listar Endereço</a>
+			</div>
+		</div>
+		<div class="alert alert-success" role="alert" style="margin-top: 10px;" th:unless="${#strings.isEmpty(msgOk)}">
+		  <span th:text="${msgOk}"></span>
+		</div>
+		<div class="alert alert-danger" role="alert" style="margin-top: 10px;" th:unless="${#strings.isEmpty(msgError)}">
+		  <span th:text="${msgError}"></span>
+		</div>
+		
+	</main>
+</body>
+</html>
