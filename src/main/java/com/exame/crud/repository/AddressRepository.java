@@ -9,5 +9,7 @@ import com.exame.crud.model.Address;
 public interface AddressRepository extends JpaRepository<Address, Integer>{
 	
 	List<Address> findByClientId(Integer idClient);
+	
+	void deleteAllByClientId(Integer idCliente);
 
 }

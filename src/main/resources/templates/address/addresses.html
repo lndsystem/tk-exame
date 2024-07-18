@@ -6,12 +6,12 @@
 	<th:block th:fragment="address">
 		<div class="card" th:each="address,iter : ${addresses}" th:id="|row-address-${address.id}|">
 		  <div class="card-body">
-		  	<h6 class="card-subtitle mb-2 text-body-secondary"># <span th:text="${iter.index+1}"></span></h6>
+		  	<h6 class="card-subtitle mb-2 text-body-secondary"># <span th:text="${address.id}"></span></h6>
 		    <div class="row">
 		    	<div class="col-12">
 		    		<table class="table">
 			    		<tr>
-			    			<td colspan="3"><span class="title">Endereço:</span><span th:text="${address.address}"></td>
+			    			<td colspan="3"><span class="title">Endereço:</span><span th:text="${address.address}"></span></td>
 			    		</tr>
 			    		<tr>
 			    			<td><span class="title">No.</span><span th:text="${address.number}"></span></td>
@@ -26,7 +26,7 @@
 			    	</table>
 		    	</div>		    	
 		    	<div class="col-12 text-end">		    		
-		    		<button class="btn btn-primary">Editar</button>
+		    		<!--<button class="btn btn-primary">Editar</button>-->
 		    		<button class="btn btn-danger" th:onclick="|deleteAddress(${address.id})|">Remover</button>
 		    	</div>
 		    </div>
