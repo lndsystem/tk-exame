@@ -96,7 +96,7 @@
 						<div class="modal-body">						
 							<div class="col-md-12">
 								<label for="first-name" class="form-label">Primeiro Nome</label> <input
-									type="text" class="form-control" name="firstName" id="first-name">
+									type="text" class="form-control js-error" name="firstName" id="first-name">
 							</div>
 							<div class="col-md-12">
 								<label for="last-name" class="form-label">Sobre Nome</label> <input
@@ -104,7 +104,7 @@
 							</div>
 							<div class="col-md-12">
 								<label for="email" class="form-label">E-mail</label> <input
-									type="email" class="form-control" name="email" id="email" >
+									type="email" class="form-control js-error" name="email" id="email" >
 							</div>
 						</div>
 						<div class="modal-footer">
@@ -129,6 +129,11 @@
 				});
 				
 				$('.js-modal-client').on('click', function(){
+					$('#modal-client').find('input').each((x,y) => {
+						$(y).removeClass('is-invalid');
+						$(y).attr('placeholder', '');
+						$(y).val('')
+					});
 					$('#modal-client').modal('show');
 				});
 				
@@ -141,14 +146,36 @@
 						data: data,
 						beforeSend: function() {
 							$.blockUI(optionsBlockUI);
+							$('.js-error').each((x,y) => {
+								$(y).removeClass('is-invalid');
+							});
 						},
 						success: function(response) {
 							$('#modal-client').modal('hide');
 							let option = `<option value='${response.id}' selected>${response.firstName} ${response.lastName}</option>`;		
 							$('#client').append(option);
 						},
+						statusCode: {
+							400: function(response) {
+								const jsonError = response.responseJSON;
+								$.each(jsonError.fieldErrors, (x,y) => {
+									const input = $(`input[name=${y.name}]`);
+									input.addClass('is-invalid');
+									input.attr('placeholder', y.message);
+								});
+							},
+							422: function(response) {
+								const jsonError = response.responseJSON;
+								$.each(jsonError.fieldErrors, (x,y) => {
+									const input = $(`input[name=${y.name}]`);
+									input.addClass('is-invalid');
+									input.attr('placeholder', y.message);
+									alert(`${y.message}`)
+								});
+							}
+						},
 						error: function(xhr) {
-						
+							console.log(xhr);
 						},
 						complete: function() {
 							$.unblockUI();

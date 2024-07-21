@@ -6,12 +6,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.exame.crud.exception.handlers.EntityExistsException;
 import com.exame.crud.model.Client;
 import com.exame.crud.repository.AddressRepository;
 import com.exame.crud.repository.ClientRepository;
 import com.exame.crud.repository.projection.ClientDropdownProjection;
 
-import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +24,7 @@ public class ClientService {
 
 	public Client saveClient(Client client) {
 		if (this.clientRepository.existsByEmail(client.getEmail())) {
-			throw new EntityExistsException();
+			throw new EntityExistsException("email", "E-mail informado já cadastrado.");
 		}
 		return this.clientRepository.save(client);
 	}
@@ -33,7 +33,7 @@ public class ClientService {
 		Client clientDb = findClientById(id);
 
 		if (!client.getEmail().equals(clientDb.getEmail()) && this.clientRepository.existsByEmail(client.getEmail())) {
-			throw new EntityExistsException();
+			throw new EntityExistsException("email", "E-mail informado já cadastrado.");
 		}
 
 		BeanUtils.copyProperties(client, clientDb);
