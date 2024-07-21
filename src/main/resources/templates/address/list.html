@@ -41,7 +41,15 @@
 						</tr>
 					</thead>
 					<tbody>
-					
+						<tr th:each="address : ${listAddresses}">
+							<td th:text="${address.id}"></td>
+							<td th:text="${address.postalCode}"></td>
+							<td th:text="|${address.street}, ${address.number} ${address.complement}|"></td>
+							<td th:text="${address.country}"></td>
+							<td th:text="${address.city}"></td>
+							<td th:text="${address.state}"></td>
+							<td></td>
+						</tr>
 					</tbody>
 				</table>
 			</div>

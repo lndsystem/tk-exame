@@ -101,9 +101,9 @@
 									<input type="text" class="form-control" id="postal-code" name="postalCode">
 								</div>
 								<div class="col-9">
-									<label for="address" class="form-label">Endereço:</label>
-									<input type="text" class="form-control js-error js-error-address" id="address"
-										name="address">
+									<label for="street" class="form-label">Endereço:</label>
+									<input type="text" class="form-control js-error js-error-street" id="street"
+										name="street">
 								</div>
 
 								<!-- Row 2 -->
@@ -129,34 +129,7 @@
 								<div class="col-6">
 									<label for="state" class="form-label">Estado</label>
 									<select id="state" class="form-select" name="state">
-										<option value="" selected>Selecione um estado...</option>
-										<option value="AC">Acre</option>
-										<option value="AL">Alagoas</option>
-										<option value="AP">Amapá</option>
-										<option value="AM">Amazonas</option>
-										<option value="BA">Bahia</option>
-										<option value="CE">Ceará</option>
-										<option value="DF">Distrito Federal</option>
-										<option value="ES">Espírito Santo</option>
-										<option value="GO">Goiás</option>
-										<option value="MA">Maranhão</option>
-										<option value="MT">Mato Grosso</option>
-										<option value="MS">Mato Grosso do Sul</option>
-										<option value="MG">Minas Gerais</option>
-										<option value="PA">Pará</option>
-										<option value="PB">Paraíba</option>
-										<option value="PR">Paraná</option>
-										<option value="PE">Pernambuco</option>
-										<option value="PI">Piauí</option>
-										<option value="RJ">Rio de Janeiro</option>
-										<option value="RN">Rio Grande do Norte</option>
-										<option value="RS">Rio Grande do Sul</option>
-										<option value="RO">Rondônia</option>
-										<option value="RR">Roraima</option>
-										<option value="SC">Santa Catarina</option>
-										<option value="SP">São Paulo</option>
-										<option value="SE">Sergipe</option>
-										<option value="TO">Tocantins</option>
+										<th:block th:replace="~{template/state :: state}"></th:block>										
 									</select>
 								</div>
 							</div>
@@ -275,6 +248,9 @@
 						},
 						success: function (response) {
 							$('#alert-body-address').show();
+							setTimeout(() => {
+								$('#alert-body-address').hide();
+							}, 2000);
 							$('#modal-address-add').modal('hide');
 							const address = `
 								<div class="card" id="row-address-${response.id}">
@@ -284,7 +260,7 @@
 								    	<div class="col-12">
 								    		<table class="table">
 									    		<tr>
-									    			<td colspan="3"><span class="title">Endereço:</span>${response.address}</td>
+									    			<td colspan="3"><span class="title">Endereço:</span>${response.street}</td>
 									    		</tr>
 									    		<tr>
 									    			<td><span class="title">No.</span>${response.number}</td>

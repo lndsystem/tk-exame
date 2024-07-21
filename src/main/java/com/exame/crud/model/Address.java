@@ -33,7 +33,8 @@ public class Address {
 	private Client client;
 
 	@NotBlank
-	private String address;
+	@Column(name = "address")
+	private String street;
 
 	@NotBlank
 	private String number;

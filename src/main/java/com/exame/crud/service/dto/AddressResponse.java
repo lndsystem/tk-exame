@@ -8,7 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AddressResponse {
-	@JsonProperty("address")
 	private String street;
 	@JsonProperty("country")
 	private String district;

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.exame.crud.model.Client;
 import com.exame.crud.repository.AddressRepository;
 import com.exame.crud.repository.ClientRepository;
+import com.exame.crud.repository.projection.ClientDropdownProjection;
 
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -61,6 +62,10 @@ public class ClientService {
 			this.addressRepository.deleteAllByClientId(id);
 			this.clientRepository.deleteById(id);
 		}
+	}
+
+	public List<ClientDropdownProjection> findAllClientsUseDropdown() {
+		return this.clientRepository.findAllClients();
 	}
 
 }
