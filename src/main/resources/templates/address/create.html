@@ -121,11 +121,13 @@
 	
 	<th:block layout:fragment="javascripts-extras">
 		<script th:src="@{/js/select2.min.js}"></script>
+		<script th:src="@{/js/i18n/pt-BR.js}"></script>
 		<script>
 			$(document).ready(function () {
 				$('#postal-code').mask('99999-999');
 				$('#client').select2({
-				    theme: 'bootstrap-5'
+				    theme: 'bootstrap-5',
+				    language: 'pt-BR'
 				});
 				
 				$('.js-modal-client').on('click', function(){
